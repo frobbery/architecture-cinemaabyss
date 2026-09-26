@@ -186,7 +186,7 @@ cat .docker/config.json | base64
   ```bash
   kubectl apply -f src/kubernetes/configmap.yaml
   kubectl apply -f src/kubernetes/secret.yaml
-  kubectl apply -f src/kubernetes/dockerconfigsecret.yaml
+  kubectl apply -f src/kubernetes/secret.yaml
   kubectl apply -f src/kubernetes/postgres-init-configmap.yaml
   ```
 
@@ -283,6 +283,11 @@ cat .docker/config.json | base64
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
 
+![Movies](tests/results/minicube.png)
+
+![Container event-service logs](tests/results/event-service-container-logs.png)
+
+![Kubernetes-tests logs](tests/results/kubernetes-tests.png)
 
 # Задание 4
 Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу 
@@ -357,6 +362,10 @@ minikube tunnel
 Потом вызовите 
 https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
+
+![Helm installation](tests/results/helm-installation.png)
+
+![Helm movies](tests/results/helm-movies.png)
 
 ## Удаляем все
 
