@@ -1,11 +1,8 @@
-## Изучите [README.md](.\README.md) файл и структуру проекта.
-
 # Задание 1
 
-1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
-Результат представьте в виде контейнерной диаграммы в нотации С4.
-Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
+**Диаграмма контейнеров (Containers)**
+
+![To-be сontainer diagram](diagrams/container/cinemaabyss-to-be-container.png)
 
 # Задание 2
 
@@ -46,6 +43,7 @@
    ```
 - Протестируйте постепенный переход, изменив переменную окружения MOVIES_MIGRATION_PERCENT в файле docker-compose.yml.
 
+![Proxy-service tests](tests/results/proxy-service-test.png)
 
 ### 2. Kafka
  Вам как архитектуру нужно также проверить гипотезу насколько просто реализовать применение Kafka в данной архитектуре.
@@ -58,6 +56,16 @@
 
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
 Приложите скриншот тестов и скриншот состояния топиков Kafka из UI http://localhost:8090 
+
+![Event-service tests](tests/results/event-service-test.png)
+
+![Movie-event topic](tests/results/movie-event-topic.png)
+
+![Payment-event topic](tests/results/payment-event-topic.png)
+
+![User-event topic](tests/results/user-event-topic.png)
+
+![Event-service logs](tests/results/event-service-logs.png)
 
 # Задание 3
 

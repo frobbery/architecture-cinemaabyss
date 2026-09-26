@@ -1,0 +1,67 @@
+@startuml
+!include ../templates/C4_Container.puml
+
+title FitLife Container Diagram
+
+top to bottom direction
+
+Person(user, "User", "A user of the cinema-abyss system")
+
+Container_Boundary(CinemaAbyssSystem, "Cinema Abyss System") {
+  Container_Boundary(CinemaAbyssFrontend, "Cinema Abyss Frontend") {
+    Container(MobileApp, "Mobile Application", "Kotlin, Swift", "Mobile app on user's device")
+    Container(WebApp, "Web Application", "Java, Spring", "Web application accessible through user's browser")
+    Container(SmartTvApp, "SmartTV Application", "Kotlin, Jetpack Compose", "Smart TV application accessible through user's TV")
+  }
+  Container_Boundary(CinemaAbyssBackend, "Cinema Abyss Backend") {
+      Container(WebBFF, "Web BFF", "Java, Spring", "BFF for web application")
+      Container(SmartTvBFF, "SmartTV BFF", "Java, Spring", "BFF for smart TV app")
+      Container(MobileAppBFF, "Mobile app BFF", "Java, Spring", "BFF for mobile app")
+      Container(ApiGateway, "API Gateway", "Kong", "Acts as single point of entry for all requests")
+      Container(UserService, "User service", "Java, Spring", "Registers and authenticates users")
+      ContainerDb(UserDatabase, "User Database", "PostgreSQL", "Stores users data")
+      Container(SubscriptionService, "Subscription service", "Java, Spring", "Service for managing users subscriptions")
+      ContainerDb(SubscriptionDatabase, "Subscription Database", "PostgreSQL", "Stores subscriptions data")
+      Container(PaymentService, "Payment service", "Java, Spring", "Service for executing regular subscription payments")
+      ContainerDb(PaymentDatabase, "Subscription Database", "PostgreSQL", "Stores payments data")
+      Container(MovieService, "Movie service", "Java, Spring", "Service for getting movie info and recommendations and ratings")
+      Container(MovieDatabase, "Movie database", "PostgreSQL", "Stores movies data")
+      Container(StreamingService, "Streaming service", "Java, Spring", "Service for streaming movies from external streaming services and open sources")
+      Container(Kafka, "Kafka", "Message Broker", "Buffers and distributes events between services")
+  }
+}
+
+System_Ext(recommendationSystem, "Recommendation system", "External recommendation system")
+System_Ext(recommendationRabbit, "RabbitMQ", "Message broker for recommendations")
+System_Ext(paymentSystem, "Payment system API", "External payment system")
+System_Ext(otherStreamings, "Streaming services", "External streaming services and open sources")
+
+Rel(user, MobileApp, "Uses the app")
+Rel(user, SmartTvApp, "Uses the app")
+Rel(user, WebApp, "Accesses via browser")
+Rel(MobileApp, MobileAppBFF, "Forwards user requests", "JSON/HTTPS")
+Rel(SmartTvApp, SmartTvBFF, "Forwards user requests", "JSON/HTTPS")
+Rel(WebApp, WebBFF, "Forwards user requests", "JSON/HTTPS")
+Rel(WebBFF, ApiGateway, "Sends requests to", "JSON/HTTPS")
+Rel(MobileAppBFF, ApiGateway, "Sends requests to", "JSON/HTTPS")
+Rel(SmartTvBFF, ApiGateway, "Sends requests to", "JSON/HTTPS")
+Rel(ApiGateway, UserService, "Registers and authenticates users", "JSON/HTTPS")
+Rel(UserService, UserDatabase, "Reads/Writes user data", "SQL/TCP")
+Rel(ApiGateway, SubscriptionService, "Views, creates and stops subscriptions", "JSON/HTTPS")
+Rel(SubscriptionService, SubscriptionDatabase, "Reads/Writes subscription data", "SQL/TCP")
+Rel(SubscriptionService, Kafka, "Publishes messages for executing regular payments", "JSON")
+Rel(Kafka, SubscriptionService, "Receives messages about payment execution status", "JSON")
+Rel(Kafka, PaymentService, "Receives messages for payment execution", "JSON")
+Rel(PaymentService, paymentSystem, "Uses API for executing payments",  "JSON/HTTPS")
+Rel(PaymentService, PaymentDatabase, "Reads/Writes payment data", "SQL/TCP")
+Rel(PaymentService, Kafka, "Publishes messages about payment execution status", "JSON")
+Rel(ApiGateway, MovieService, "Views movies info and rates them", "JSON/HTTPS")
+Rel(MovieService, MovieDatabase, "Reads/Writes movie data", "SQL/TCP")
+Rel(MovieService, recommendationRabbit, "Sends users watch history and ratings", "JSON")
+Rel(recommendationRabbit, MovieService, "Receives movies recommendations for user", "JSON")
+Rel(recommendationRabbit, recommendationSystem, "Receives users watch history and ratings", "JSON")
+Rel(recommendationSystem, recommendationRabbit, "Sends movies recommendations for user", "JSON")
+Rel(ApiGateway, StreamingService, "Requests specific movie video")
+Rel(StreamingService, otherStreamings, "Requests specific movie video form specific streaming or open source")
+
+@enduml
