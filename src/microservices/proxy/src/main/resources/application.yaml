@@ -1,0 +1,9 @@
+movie:
+  monolith:
+    url: ${MONOLITH_URL}
+  service:
+    url: ${MOVIES_SERVICE_URL}
+gradualMigration: ${GRADUAL_MIGRATION}
+movieMigrationPercent: ${MOVIES_MIGRATION_PERCENT}
+server:
+  port: ${PORT}
